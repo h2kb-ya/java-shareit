@@ -26,7 +26,7 @@ import ru.practicum.shareit.item.service.ItemService;
 @Log4j2
 public class ItemController {
 
-    private final static String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final ItemService itemService;
 
     @PostMapping
