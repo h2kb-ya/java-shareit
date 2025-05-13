@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.controller;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,6 +31,13 @@ public class UserController {
     public UserDto getUserById(@PathVariable("id") Long id) {
         log.info("Request: GET /users/{}", id);
         return UserMapper.toDto(userService.getUserById(id));
+    }
+
+    @GetMapping
+    public List<UserDto> getUsers() {
+        log.info("Request: GET /users");
+
+        return UserMapper.toDto(userService.getUsers());
     }
 
     @PostMapping

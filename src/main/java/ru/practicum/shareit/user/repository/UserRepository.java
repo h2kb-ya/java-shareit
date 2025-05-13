@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.repository;
 
+import java.util.List;
 import java.util.Optional;
 import ru.practicum.shareit.user.model.User;
 
@@ -17,5 +18,5 @@ public interface UserRepository {
 
     boolean existsById(Long id);
 
-    Iterable<User> findAll();
+    List<User> findAll();
 }

@@ -1,5 +1,7 @@
 package ru.practicum.shareit.user.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.user.dto.CreateUserRequest;
 import ru.practicum.shareit.user.dto.UpdateUserRequest;
@@ -25,5 +27,9 @@ public class UserMapper {
 
     public UserDto toDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
+    }
+
+    public List<UserDto> toDto(List<User> users) {
+        return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
     }
 }

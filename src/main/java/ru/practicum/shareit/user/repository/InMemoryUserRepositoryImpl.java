@@ -1,6 +1,8 @@
 package ru.practicum.shareit.user.repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,12 +50,12 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean existsById(Long id) {
-        return false;
+        return users.containsKey(id);
     }
 
     @Override
-    public Iterable<User> findAll() {
-        return null;
+    public List<User> findAll() {
+        return new ArrayList<>(users.values());
     }
 
     private Long getUserId() {

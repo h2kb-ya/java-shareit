@@ -69,11 +69,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findItems(String search) {
-        return List.of();
-    }
-
-    @Override
     public List<Item> searchAvailableItems(String text) {
         log.debug("Searching available items by text {}", text);
 

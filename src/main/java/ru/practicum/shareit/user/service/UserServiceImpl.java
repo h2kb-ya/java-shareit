@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -66,5 +67,12 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
+    }
+
+    @Override
+    public List<User> getUsers() {
+        log.debug("Getting users");
+
+        return userRepository.findAll();
     }
 }
