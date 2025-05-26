@@ -19,8 +19,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         log.debug("Creating user: {}", user);
-        if (!userRepository.existByEmail(user.getEmail())) {
-            User createdUser = userRepository.create(user);
+        if (!userRepository.existsByEmail(user.getEmail())) {
+            User createdUser = userRepository.save(user);
             log.info("User created: {}", createdUser);
 
             return createdUser;
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
         final User currentUser = getUserById(user.getId());
 
         if (user.getEmail() != null && !user.getEmail().equals(currentUser.getEmail())) {
-            if (userRepository.existByEmail(user.getEmail())) {
+            if (userRepository.existsByEmail(user.getEmail())) {
                 log.warn("User with email {} already exists", user.getEmail());
                 throw new DataIntegrityViolationException("User with email " + user.getEmail() + " already exists");
             }
@@ -50,13 +50,13 @@ public class UserServiceImpl implements UserService {
 
         log.info("User updated: {}", currentUser);
 
-        return userRepository.update(currentUser);
+        return userRepository.save(currentUser);
     }
 
     @Override
     public void deleteUser(Long userId) {
         if (userRepository.existsById(userId)) {
-            userRepository.delete(userId);
+            userRepository.deleteById(userId);
             log.info("User deleted: {}", userId);
         }
     }

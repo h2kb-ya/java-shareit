@@ -25,7 +25,7 @@ public class ItemServiceImpl implements ItemService {
         log.debug("Creating an item {} by user {}", item, userId);
         final User owner = userService.getUserById(userId);
         item.setOwner(owner);
-        Item createdItem = itemRepository.create(item);
+        Item createdItem = itemRepository.save(item);
         log.info("Item created: {}", createdItem);
 
         return createdItem;
@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
             itemToUpdate.setDescription(item.getDescription());
             itemToUpdate.setAvailable(item.isAvailable());
 
-            Item updatedItem = itemRepository.update(itemToUpdate);
+            Item updatedItem = itemRepository.save(itemToUpdate);
             log.info("Item updated: {}", updatedItem);
 
             return updatedItem;
@@ -65,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
         log.debug("Getting items by user: {}", userId);
         userService.getUserById(userId);
 
-        return itemRepository.findAllByUserId(userId);
+        return itemRepository.findAllByOwnerId(userId);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
 
-        return itemRepository.findAvailableByNameOrDescriptionContaining(text);
+        return itemRepository.searchAvailableItems(text);
     }
 
     private boolean checkItemOwner(Long userId, Item item) {
