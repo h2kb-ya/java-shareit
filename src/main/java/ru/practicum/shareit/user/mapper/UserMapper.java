@@ -5,8 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import ru.practicum.shareit.user.dto.CreateUserRequest;
-import ru.practicum.shareit.user.dto.UpdateUserRequest;
+import ru.practicum.shareit.user.dto.UserCreateRequest;
+import ru.practicum.shareit.user.dto.UserUpdateRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -15,10 +15,10 @@ import ru.practicum.shareit.user.model.User;
 public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
-    User toUser(CreateUserRequest createUserRequest);
+    User toUser(UserCreateRequest userCreateRequest);
 
     @Mapping(target = "id", ignore = true)
-    void updateUser(@MappingTarget User user, UpdateUserRequest updateUserRequest);
+    void updateUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
 
     UserDto toUserDto(User user);
 

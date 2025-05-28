@@ -41,6 +41,26 @@ public class ShareItExceptionHandler {
     }
 
     @ExceptionHandler
+    public ProblemDetail handleNotAvailableException(final NotAvailableException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Not available");
+        problemDetail.setDetail(e.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+
+        return problemDetail;
+    }
+
+    @ExceptionHandler
+    public ProblemDetail handleCommentNotAllowedException(final CommentNotAllowedException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problemDetail.setTitle("Not Allowed");
+        problemDetail.setDetail(e.getMessage());
+        problemDetail.setProperty("timestamp", Instant.now());
+
+        return problemDetail;
+    }
+
+    @ExceptionHandler
     public ProblemDetail handleException(final Exception e) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         problemDetail.setTitle("Internal server error");
