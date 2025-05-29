@@ -73,8 +73,13 @@ public class ItemServiceImpl implements ItemService {
         log.debug("Getting item by id: {}", itemId);
         Item item = getItemById(itemId);
         List<Comment> comments = commentRepository.findCommentsByItemId(itemId);
-        Booking lastBooking = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
-        Booking nextBooking = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
+        Booking lastBooking = null;
+        Booking nextBooking = null;
+
+        if (checkItemOwner(userId, item)) {
+            lastBooking = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
+            nextBooking = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
+        }
 
         return itemMapper.toItemOwnerDto(item, lastBooking, nextBooking, comments);
     }
