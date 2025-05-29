@@ -12,7 +12,6 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.CommentNotAllowedException;
 import ru.practicum.shareit.exception.DataIntegrityViolationException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -34,14 +33,14 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public ItemDto createItem(Long userId, Item item) {
+    public Item createItem(Long userId, Item item) {
         log.debug("Creating an item {} by user {}", item, userId);
         final User owner = userService.getUserById(userId);
         item.setOwner(owner);
         Item createdItem = itemRepository.save(item);
         log.info("Item created: {}", createdItem);
 
-        return itemMapper.toItemDto(createdItem);
+        return createdItem;
     }
 
     @Override
@@ -70,12 +69,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemOwnerDto getItemByIdAndOwner(Long itemId, Long userId) {
+    public ItemOwnerDto getItemDetailsForOwner(Long itemId, Long userId) {
         log.debug("Getting item by id: {}", itemId);
         Item item = getItemById(itemId);
         List<Comment> comments = commentRepository.findCommentsByItemId(itemId);
-        Booking lastBooking = null;
-        Booking nextBooking = null;
+        Booking lastBooking = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
+        Booking nextBooking = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
 
         return itemMapper.toItemOwnerDto(item, lastBooking, nextBooking, comments);
     }

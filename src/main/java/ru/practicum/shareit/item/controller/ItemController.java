@@ -41,7 +41,7 @@ public class ItemController {
         log.info("Request: POST /items, data: {}, by user: {}", createRequest, userId);
         final Item item = itemMapper.toItem(createRequest);
 
-        return itemService.createItem(userId, item);
+        return itemMapper.toItemDto(itemService.createItem(userId, item));
     }
 
     @PatchMapping("/{itemId}")
@@ -58,7 +58,7 @@ public class ItemController {
     public ItemOwnerDto getItemById(@RequestHeader(USER_ID_HEADER) long userId, @PathVariable long itemId) {
         log.info("Request: GET /items/{}", itemId);
 
-        return itemService.getItemByIdAndOwner(itemId, userId);
+        return itemService.getItemDetailsForOwner(itemId, userId);
     }
 
     @GetMapping

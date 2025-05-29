@@ -19,7 +19,7 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {UserMapper.class, BookingMapper.class})
+        uses = {UserMapper.class})
 public interface ItemMapper {
 
     @Mapping(target = "id", ignore = true)
