@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DataIntegrityViolationException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
@@ -17,6 +18,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public User createUser(User user) {
         log.debug("Creating user: {}", user);
         if (!userRepository.existsByEmail(user.getEmail())) {
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) {
         log.debug("Updating user: {}", user);
         final User currentUser = getUserById(user.getId());
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
@@ -62,6 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getUserById(Long userId) {
         log.debug("Getting user by id: {}", userId);
 
@@ -70,8 +75,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> getUsers() {
-        log.debug("Getting users");
+        log.debug("Getting all users");
 
         return userRepository.findAll();
     }

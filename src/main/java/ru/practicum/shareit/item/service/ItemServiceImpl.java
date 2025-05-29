@@ -6,6 +6,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -33,6 +34,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
+    @Transactional
     public Item createItem(Long userId, Item item) {
         log.debug("Creating an item {} by user {}", item, userId);
         final User owner = userService.getUserById(userId);
@@ -44,6 +46,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item updateItem(Long userId, Item item) {
         log.debug("Updating an item {} by user {}", item, userId);
         userService.getUserById(userId);
@@ -69,6 +72,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemOwnerDto getItemDetailsForOwner(Long itemId, Long userId) {
         log.debug("Getting item by id: {}", itemId);
         Item item = getItemById(itemId);
@@ -85,6 +89,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Item> getItemsByUser(Long userId) {
         log.debug("Getting items by user: {}", userId);
         userService.getUserById(userId);
@@ -104,7 +109,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Comment sendComment(Comment comment, Long userId, Long itemId) {
+        log.debug("Sending comment {} by user {} to item {}", comment, userId, itemId);
         if (!hasUserCompletedBooking(userId, itemId)) {
             throw new CommentNotAllowedException(
                     "User " + userId + " didn't use item " + itemId + " or booking is not completed yet");
@@ -115,11 +122,17 @@ public class ItemServiceImpl implements ItemService {
         comment.setAuthor(user);
         comment.setItem(item);
 
-        return commentRepository.save(comment);
+        Comment createdComment = commentRepository.save(comment);
+        log.info("Comment created: {}", createdComment);
+
+        return createdComment;
     }
 
     @Override
+    @Transactional
     public Item getItemById(Long itemId) {
+        log.debug("Getting item by id {}", itemId);
+
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item " + itemId + " not found"));
     }

@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
@@ -26,7 +27,9 @@ public class BookingServiceImpl implements BookingService {
     private final ItemService itemService;
 
     @Override
+    @Transactional
     public Booking createBooking(Booking booking, Long bookerId, Long itemId) {
+        log.debug("Creating booking: {}", booking);
         User user = userService.getUserById(bookerId);
         Item item = itemService.getItemById(itemId);
 
@@ -37,11 +40,16 @@ public class BookingServiceImpl implements BookingService {
         booking.setBooker(user);
         booking.setItem(item);
 
-        return bookingRepository.save(booking);
+        Booking createdBooking = bookingRepository.save(booking);
+        log.info("Booking created: {}", createdBooking);
+
+        return createdBooking;
     }
 
     @Override
+    @Transactional
     public Booking processBooking(Long bookingId, Long ownerId, boolean approved) {
+        log.debug("Processing booking: {} by owner {} approved {}", bookingId, ownerId, approved);
         Booking booking = getBookingById(bookingId);
         Long currentOwnerId = booking.getItem().getOwner().getId();
 
@@ -50,11 +58,14 @@ public class BookingServiceImpl implements BookingService {
         }
 
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
+        Booking updatedBooking = bookingRepository.save(booking);
+        log.info("Booking updated: {} new status {}", updatedBooking, updatedBooking.getStatus());
 
-        return bookingRepository.save(booking);
+        return updatedBooking;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Booking getBookingById(Long bookingId) {
         log.debug("Getting booking by id: {}", bookingId);
 
@@ -63,7 +74,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Booking> getBookingsByUserIdAndState(Long userId, BookingState state) {
+        log.debug("Getting bookings by userId {} and state {}", userId, state);
+
         return switch (state) {
             case CURRENT -> bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.APPROVED);
             case WAITING -> bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
