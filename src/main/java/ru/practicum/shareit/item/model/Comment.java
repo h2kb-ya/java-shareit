@@ -1,5 +1,6 @@
-package ru.practicum.shareit.request.model;
+package ru.practicum.shareit.item.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,19 +14,25 @@ import lombok.Data;
 import ru.practicum.shareit.user.model.User;
 
 @Entity
-@Table(name = "requests")
+@Table(name = "comments")
 @Data
-public class ItemRequest {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String description;
+    private String text;
+
+    @Column(name = "create_date")
+    private LocalDateTime createDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requestor_id")
-    private User requestor;
+    @JoinColumn(name = "item_id")
+    private Item item;
 
-    private LocalDateTime created;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private User author;
+
 }

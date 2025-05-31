@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:17.5
+    container_name: shareit-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./volumes/postgres:/var/lib/postgres/data/
+    environment:
+      - POSTGRES_DB=shareit
+      - POSTGRES_USER=shareit
+      - POSTGRES_PASSWORD=shareit

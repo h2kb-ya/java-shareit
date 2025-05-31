@@ -1,35 +1,26 @@
 package ru.practicum.shareit.user.mapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import lombok.experimental.UtilityClass;
-import ru.practicum.shareit.user.dto.CreateUserRequest;
-import ru.practicum.shareit.user.dto.UpdateUserRequest;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import ru.practicum.shareit.user.dto.UserCreateRequest;
+import ru.practicum.shareit.user.dto.UserUpdateRequest;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
-@UtilityClass
-public class UserMapper {
+@Mapper(componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface UserMapper {
 
-    public User toUser(CreateUserRequest createRequest) {
-        return User.builder()
-                .name(createRequest.name())
-                .email(createRequest.email())
-                .build();
-    }
+    @Mapping(target = "id", ignore = true)
+    User toUser(UserCreateRequest userCreateRequest);
 
-    public User toUser(UpdateUserRequest updateRequest) {
-        return User.builder()
-                .name(updateRequest.name())
-                .email(updateRequest.email())
-                .build();
-    }
+    @Mapping(target = "id", ignore = true)
+    void updateUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
 
-    public UserDto toDto(User user) {
-        return new UserDto(user.getId(), user.getName(), user.getEmail());
-    }
+    UserDto toUserDto(User user);
 
-    public List<UserDto> toDto(List<User> users) {
-        return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
-    }
+    List<UserDto> toUserDtoList(List<User> users);
 }
