@@ -20,4 +20,6 @@ public interface ItemService {
     List<Item> searchAvailableItems(String searchText);
 
     Comment sendComment(Comment comment, Long userId, Long itemId);
+
+    boolean isItemOwner(Long userId, Item item);
 }

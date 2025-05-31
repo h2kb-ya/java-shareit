@@ -10,7 +10,7 @@ public interface BookingService {
 
     Booking processBooking(Long bookingId, Long ownerId, boolean approved);
 
-    Booking getBookingById(Long bookingId);
+    Booking getBookingByIdForBookerOrItemOwner(Long bookingId, Long userId);
 
     List<Booking> getBookingsByUserIdAndState(Long userId, BookingState state);
 }

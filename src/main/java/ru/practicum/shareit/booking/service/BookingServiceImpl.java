@@ -51,9 +51,9 @@ public class BookingServiceImpl implements BookingService {
     public Booking processBooking(Long bookingId, Long ownerId, boolean approved) {
         log.debug("Processing booking: {} by owner {} approved {}", bookingId, ownerId, approved);
         Booking booking = getBookingById(bookingId);
-        Long currentOwnerId = booking.getItem().getOwner().getId();
+        Item item = booking.getItem();
 
-        if (!currentOwnerId.equals(ownerId)) {
+        if (!itemService.isItemOwner(ownerId, item)) {
             throw new NotAvailableException("User " + ownerId + " is not owner for item " + booking.getItem().getId());
         }
 
@@ -66,25 +66,45 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public Booking getBookingById(Long bookingId) {
+    public Booking getBookingByIdForBookerOrItemOwner(Long bookingId, Long userId) {
         log.debug("Getting booking by id: {}", bookingId);
+        Booking booking = getBookingById(bookingId);
+        Long itemId = booking.getItem().getId();
 
-        return bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("Booking " + bookingId + " not found"));
+        if (!isUserAllowedToAccessBooking(userId, booking)) {
+            throw new NotAvailableException(
+                    "User " + userId + " is not owner for item " + itemId + " or for booking " + bookingId);
+        }
+
+        return booking;
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Booking> getBookingsByUserIdAndState(Long userId, BookingState state) {
         log.debug("Getting bookings by userId {} and state {}", userId, state);
+        LocalDateTime now = LocalDateTime.now();
 
         return switch (state) {
-            case CURRENT -> bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.APPROVED);
-            case WAITING -> bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING);
-            case PAST -> bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.CANCELLED);
-            case REJECTED -> bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED);
-            case FUTURE -> bookingRepository.findByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+            case CURRENT -> bookingRepository.findCurrentBookingsByUser(userId, now);
+            case WAITING -> bookingRepository.findWaitingBookingsByUser(userId);
+            case PAST -> bookingRepository.findPastBookingsByUser(userId, now);
+            case REJECTED -> bookingRepository.findRejectedBookingsByUser(userId);
+            case FUTURE -> bookingRepository.findFutureBookingsByUser(userId, now);
             default -> bookingRepository.findByBookerIdOrderByStartDesc(userId);
         };
+    }
+
+    private Booking getBookingById(Long bookingId) {
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new NotFoundException("Booking " + bookingId + " not found"));
+    }
+
+    private boolean isBooker(Long userId, Booking booking) {
+        return booking.getBooker().getId().equals(userId);
+    }
+
+    private boolean isUserAllowedToAccessBooking(Long userId, Booking booking) {
+        return isBooker(userId, booking) || itemService.isItemOwner(userId, booking.getItem());
     }
 }

@@ -56,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Item " + item.getId() + " not found");
         }
 
-        if (checkItemOwner(userId, itemToUpdateOptional.get())) {
+        if (isItemOwner(userId, itemToUpdateOptional.get())) {
             Item itemToUpdate = itemToUpdateOptional.get();
             itemToUpdate.setName(item.getName());
             itemToUpdate.setDescription(item.getDescription());
@@ -80,7 +80,7 @@ public class ItemServiceImpl implements ItemService {
         Booking lastBooking = null;
         Booking nextBooking = null;
 
-        if (checkItemOwner(userId, item)) {
+        if (isItemOwner(userId, item)) {
             lastBooking = bookingRepository.findLastBooking(itemId, LocalDateTime.now());
             nextBooking = bookingRepository.findNextBooking(itemId, LocalDateTime.now());
         }
@@ -137,7 +137,8 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NotFoundException("Item " + itemId + " not found"));
     }
 
-    private boolean checkItemOwner(Long userId, Item item) {
+    @Override
+    public boolean isItemOwner(Long userId, Item item) {
         return item.getOwner().getId().equals(userId);
     }
 
