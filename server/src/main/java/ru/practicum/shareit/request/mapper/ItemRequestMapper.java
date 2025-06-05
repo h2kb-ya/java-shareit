@@ -32,7 +32,7 @@ public interface ItemRequestMapper {
 
     @Mapping(target = "requestorId", source = "itemRequest.requestor.id")
     @Mapping(target = "created", source = "itemRequest.createDate")
-    @Mapping(target = "answers", source = "answers")
+    @Mapping(target = "items", source = "answers")
     ItemRequestAndAnswersDto toItemRequestAndAnswersDto(ItemRequest itemRequest, List<ItemRequestAnswerDto> answers);
 
     default List<ItemRequestAndAnswersDto> toItemRequestAndAnswersDtoList(List<ItemRequest> itemRequests, List<Item> answers) {
