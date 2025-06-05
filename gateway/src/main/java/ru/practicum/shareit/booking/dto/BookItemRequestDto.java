@@ -8,10 +8,10 @@ import jakarta.validation.constraints.FutureOrPresent;
 public record BookItemRequestDto(
         long itemId,
 
-        @FutureOrPresent
+        @FutureOrPresent(message = "Start must be in future or present")
         LocalDateTime start,
 
-        @Future
+        @Future(message = "End must be in future")
         LocalDateTime end
 ) {
 

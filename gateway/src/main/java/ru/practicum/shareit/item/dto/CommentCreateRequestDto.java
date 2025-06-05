@@ -1,9 +1,9 @@
 package ru.practicum.shareit.item.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record CommentCreateRequestDto(
-        @NotNull(message = "Comment text must not be null")
+        @NotBlank(message = "Comment text must not be blank")
         String text
 ) {
 
