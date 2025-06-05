@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,7 +7,6 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import ru.practicum.shareit.user.dto.UserCreateRequestDto;
 
 public class UserCreateRequestDtoValidatorTest {
 
