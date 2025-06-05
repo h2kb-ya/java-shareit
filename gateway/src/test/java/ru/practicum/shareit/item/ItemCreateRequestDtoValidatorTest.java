@@ -30,7 +30,7 @@ public class ItemCreateRequestDtoValidatorTest {
         ItemCreateRequestDto createRequest = new ItemCreateRequestDto("Pizza", "La Bomba", false, 0L);
         Set<ConstraintViolation<ItemCreateRequestDto>> violations = validator.validate(createRequest);
 
-        assertThat(violations).hasSize(0    );
+        assertThat(violations).hasSize(0);
     }
 
 }
