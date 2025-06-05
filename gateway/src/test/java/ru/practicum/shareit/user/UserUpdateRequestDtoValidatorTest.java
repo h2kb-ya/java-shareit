@@ -7,7 +7,6 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import ru.practicum.shareit.user.dto.UserCreateRequestDto;
 import ru.practicum.shareit.user.dto.UserUpdateRequestDto;
 
 public class UserUpdateRequestDtoValidatorTest {
