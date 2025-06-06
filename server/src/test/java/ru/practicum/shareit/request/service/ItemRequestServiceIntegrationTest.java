@@ -33,7 +33,7 @@ public class ItemRequestServiceIntegrationTest {
 
         assertEquals(4, result.size());
 
-        ItemRequest itemRequest = result.get(0);
+        ItemRequest itemRequest = result.getFirst();
         assertNotNull(itemRequest.getRequestor());
         assertEquals("Шреддер", itemRequest.getRequestor().getName());
     }

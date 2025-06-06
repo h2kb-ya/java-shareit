@@ -29,7 +29,7 @@ public class ItemServiceIntegrationTest {
 
     @Test
     void createItem_happyPath_itemCreated() {
-        User owner = userService.getUsers().get(0);
+        User owner = userService.getUsers().getFirst();
         Item item = new Item(null, "Новый предмет", "Описание предмета", true, null, null);
 
         Item createdItem = target.createItem(owner.getId(), item, null);
@@ -41,12 +41,12 @@ public class ItemServiceIntegrationTest {
 
     @Test
     void updateItem_happyPath_itemUpdated() {
-        User owner = userService.getUsers().get(0);
+        User owner = userService.getUsers().getFirst();
 
         List<Item> items = target.getItemsByUser(owner.getId());
         if (items.isEmpty()) return;
 
-        Item item = items.get(0);
+        Item item = items.getFirst();
         item.setName("Обновленное имя");
         item.setDescription("Обновленное описание");
         item.setAvailable(!item.isAvailable());
@@ -66,7 +66,7 @@ public class ItemServiceIntegrationTest {
         List<Item> items = target.getItemsByUser(owner.getId());
         if (items.isEmpty()) return;
 
-        Item item = items.get(0);
+        Item item = items.getFirst();
         item.setName("Имя не владельца");
 
         assertThrows(DataIntegrityViolationException.class,
@@ -75,11 +75,11 @@ public class ItemServiceIntegrationTest {
 
     @Test
     void getItemDetailsForOwner_happyPath_itemOwnerDtoReturned() {
-        User owner = userService.getUsers().get(0);
+        User owner = userService.getUsers().getFirst();
         List<Item> items = target.getItemsByUser(owner.getId());
         if (items.isEmpty()) return;
 
-        Item item = items.get(0);
+        Item item = items.getFirst();
         ItemOwnerDto dto = target.getItemDetailsForOwner(item.getId(), owner.getId());
 
         assertNotNull(dto);
@@ -88,12 +88,12 @@ public class ItemServiceIntegrationTest {
 
     @Test
     void sendComment_happyPath_commentCreated() {
-        User user = userService.getUsers().get(0);
+        User user = userService.getUsers().getFirst();
         List<Item> items = target.getItemsByUser(user.getId());
 
         if (items.isEmpty()) return;
 
-        Item item = items.get(0);
+        Item item = items.getFirst();
 
         Comment comment = new Comment();
         comment.setText("Отличный предмет!");
@@ -107,12 +107,12 @@ public class ItemServiceIntegrationTest {
 
     @Test
     void sendComment_shouldThrow_whenBookingNotCompleted() {
-        User user = userService.getUsers().get(0);
+        User user = userService.getUsers().getFirst();
         List<Item> items = target.getItemsByUser(user.getId());
 
         if (items.isEmpty()) return;
 
-        Item item = items.get(0);
+        Item item = items.getFirst();
 
         Comment comment = new Comment();
         comment.setText("Попытка комментировать без завершенного бронирования");
