@@ -44,7 +44,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> bookItem(@RequestHeader(USER_ID_HEADER) long userId,
+    public ResponseEntity<Object> bookItem(@RequestHeader(USER_ID_HEADER) @Positive long userId,
             @RequestBody @Valid BookItemRequestDto requestDto) {
         log.info("Creating booking {}, userId={}", requestDto, userId);
 
@@ -52,21 +52,25 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<Object> getBooking(@RequestHeader(USER_ID_HEADER) long userId,
-            @PathVariable Long bookingId) {
+    public ResponseEntity<Object> getBooking(@RequestHeader(USER_ID_HEADER) @Positive long userId,
+            @PathVariable @Positive Long bookingId) {
         log.info("Get booking {}, userId={}", bookingId, userId);
 
         return bookingClient.getBooking(userId, bookingId);
     }
 
     @PatchMapping("/{bookingId}")
-    public ResponseEntity<Object> processBooking(@RequestHeader(USER_ID_HEADER) long ownerId,
-            @PathVariable long bookingId, @RequestParam boolean approved) {
+    public ResponseEntity<Object> processBooking(@RequestHeader(USER_ID_HEADER) @Positive long ownerId,
+            @PathVariable @Positive long bookingId, @RequestParam boolean approved) {
+        log.info("Approve booking {}, userId={}", bookingId, ownerId);
+
         return bookingClient.processBooking(ownerId, bookingId, approved);
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<Object> getBookingsForItemOwner(@RequestHeader(USER_ID_HEADER) long userId) {
+    public ResponseEntity<Object> getBookingsForItemOwner(@RequestHeader(USER_ID_HEADER) @Positive long userId) {
+        log.info("Get bookings for item owner {}", userId);
+
         return bookingClient.getBookingsForItemOwner(userId);
     }
 }

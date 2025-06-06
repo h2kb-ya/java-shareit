@@ -1,7 +1,5 @@
 package ru.practicum.shareit.request.dto;
 
-public record ItemRequestCreateDto(
-        String description
-) {
+public record ItemRequestCreateDto(String description) {
 
 }
